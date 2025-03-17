@@ -8,10 +8,6 @@ def sort_string_array(arr):
     """
 
     # Implement the sorting algorithm here
-    for n_palabra in range(len(arr)-1):
-        for elemento in range(1,len(arr)-n_palabra):
-            if arr[elemento]  < arr[elemento-1]:
-                arr[elemento], arr[elemento-1]= arr[elemento-1], arr[elemento]
     pass
 
     
