@@ -1,4 +1,4 @@
-# **Clase III**  
+****# **Clase III**  
 ### *Algoritmos y estructuras de datos*  
 
 ## **Problema 1: Procesamiento de Eventos en Tiempo Real**  
