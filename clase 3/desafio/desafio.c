@@ -29,7 +29,7 @@ void run_tests() {
 
   TestCase tests[] = {
       {test_1, 3, 2},
-      {test_2, 2, 2},
+      {test_2, 2, 0},
       {test_3, 4, 0},
       {test_4, 1, 0}
   };

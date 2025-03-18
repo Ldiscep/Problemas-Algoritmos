@@ -44,11 +44,12 @@ void swap(int *x, int *y) {
 }
 
 int array_min_index(const int *array, int length) {
-    int min = *array;
+    if(length == 0) return -1;
+    int min = array[0];
     int min_index = 0;
     for (int i = 1; i < length; i++){
-        if (min > *(array + i)){
-            min = *(array + i);
+        if (min > array[i]){
+            min = array[i];
             min_index = i;
         }
     }
@@ -62,14 +63,16 @@ int *copy_array(const int *array, int length) {
     int *array2=(int *)malloc(length * sizeof(int));
     
     for (int i=0;i<length;i++){
-        *(array2+i) = *(array +i);
+        array2[i] = array[i];
     }
-    
-    return array2;
-    free(array2);
-}
-void selection_sort(int *array, int length){
 
+    return array2;
+}
+
+void selection_sort(int *array, int length){
+    if (array == NULL) {
+        return;
+    }
     for (int i=0; i< length; i++){
         int j ;
         for (j=0; j<(length-i); j++){
@@ -86,41 +89,108 @@ void selection_sort(int *array, int length){
 
 
 int* array_union(const int *array1, int length1, const int *array2, int length2) {
-    int *joined= (int*)malloc((length1+length2)*sizeof(int));
-    int length_joined;
-    for (int i = 0; i<(length1);i++){
-        *(joined+i) = +*(array1+i);
-        length_joined++;
+    int *joined = (int *)malloc((length1 + length2) * sizeof(int));
+    int len = 0;
+    for (int i = 0; i < length1; i++) {
+        joined[len++] = array1[i];
     }
-    for (int i=0; i< length1;  i++){
-        for (int j = 0;j<length2; j++){
-            if (*(array2+j) == *(array1+i)){
+    for (int j = 0; j < length2; j++) {
+        int found = 0;
+        for (int i = 0; i < length1; i++) {
+            if (array2[j] == array1[i]) {
+                found = 1;
                 break;
             }
-            *(joined+length1+i)=*(array2+j);
-            length_joined++;
+        }
+        if (!found) {
+            joined[len++] = array2[j];
         }
     }
-    selection_sort(joined, length_joined);
+    selection_sort(joined, len);
+
     return joined;
 }
 
 void matrix_map(Matriz matrix, int row_size, int col_size, int f(int)) {
+    if (f == NULL) {
+        return;
+    }
+    
+    for (int r = 0; r < row_size; r++){
+        for (int c = 0; c < col_size; c++/*referencia*/){
+            matrix[r][c]=f(matrix[r][c]);
+        }
+    }
     return;
 }
 
 Matriz copy_matrix(const Matriz matrix, int row_size, int col_size) {
-    return NULL;
+    if (matrix == NULL) {
+        return NULL;
+    }
+    Matriz matriz2 = (Matriz)malloc(row_size * sizeof(int *));
+    for (int r = 0; r < row_size; r++) {
+        matriz2[r] = (int *)malloc(col_size * sizeof(int));
+        for (int c = 0; c < col_size; c++) {
+            matriz2[r][c] = matrix[r][c];
+        }
+    }
+    return matriz2;
 }
 
 bool matrix_equal(const Matriz matrix1, int row_size1, int col_size1, const Matriz matrix2, int row_size2, int col_size2) {
+    if (matrix1 == NULL || matrix2 == NULL) {
+        return matrix1 == matrix2;
+    }
+    if (col_size1 != col_size2 || row_size1 != row_size2) return false;
+    for (int r = 0; r < row_size1; r++) {
+        for (int c = 0; c < col_size1; c++) {
+            if (matrix1[r][c] != matrix2[r][c]) return false;
+        }
+    }
     return true;
 }
+    
+  
+
 
 Matriz* copy_array_of_matrices(const Matriz *array_of_matrices, const Matriz matrix_dimensions, int array_lenght) {
-    return NULL;
+    if (array_of_matrices == NULL || matrix_dimensions == NULL) {
+        return NULL;
+    }
+    
+    Matriz* new_array = (Matriz *)malloc(array_lenght * sizeof(Matriz));
+    for (int i = 0; i < array_lenght; i++) {
+        Matriz matrix = array_of_matrices[i];
+        int row_size = matrix_dimensions[i][0];
+        int col_size = matrix_dimensions[i][1];
+        new_array[i] = (Matriz)malloc(row_size * sizeof(int *));
+        for (int r = 0; r < row_size; r++) {
+            new_array[i][r] = (int *)malloc(col_size * sizeof(int));
+            for (int c = 0; c < col_size; c++) {
+                new_array[i][r][c] = matrix[r][c];
+            }
+        }
+    }
+    return new_array;
+
+}
+    
+
+void free_array_of_matrices(Matriz* array_of_matrices, Matriz matrix_dimensions, int array_length) {
+    for (int i = 0; i< array_length; i++){
+        int rows =matrix_dimensions[i][0];
+        for (int r = 0; r < rows; r++){
+            free(array_of_matrices[i][r]);
+        }
+        free(array_of_matrices[i]);
+        }
+    for (int i=0; i < array_length; i++){
+        free(matrix_dimensions[i]);
+    }
+    free(matrix_dimensions);
+    
+    free(array_of_matrices);
+    
 }
 
-void free_array_of_matrices(Matriz* array_of_matrices, Matriz matrix_dimensions, int array_lenght) {
-    return;
-}
