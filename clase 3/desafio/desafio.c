@@ -1,7 +1,20 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int diagonal_difference(int** nums, int nums_size) {
-    return 0;
+  int diag1=0;
+  for (int i = 0; i<nums_size; i++){ // diagonal 1
+    int* fila = nums[i];
+    int elemento = fila[i];
+    diag1=diag1 + elemento;
+  }
+  int diag2=0;
+  for (int j = 0; j<nums_size;j++){
+    int* fila = nums[j];
+    int elemento = fila[nums_size-j-1];
+    diag2= diag2+elemento;
+  }
+    return abs(diag1-diag2);
 }
 
 // TESTS
