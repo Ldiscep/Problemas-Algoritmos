@@ -12,7 +12,7 @@ Se analizan tres implementaciones con distintas complejidades:
 
 1. **Ordenando el arreglo:**  
    - Se ordena el arreglo y se toman los `k` mayores.  
-   - 📌 **Pregunta:** ¿Cuál es la complejidad de esta implementación?  
+   - 📌 **Pregunta:** ¿Cuál es la complejidad de esta implementación?  (por lo menos nlog(n))
 
 2. **Usando un arreglo auxiliar de `k` elementos:**  
    - Se mantiene un arreglo auxiliar con los `k` mayores elementos vistos hasta el momento.  

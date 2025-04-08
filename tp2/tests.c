@@ -707,6 +707,7 @@ bool test_iter_move_on_random_list() {
   tests_result &=
       test_assert("El iterador esta al final", list_iter_at_last(iter));
   int cant = 1;
+
   while (list_iter_backward(iter)) {
     cant++;
   }

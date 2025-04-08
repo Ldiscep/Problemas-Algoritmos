@@ -1,9 +1,12 @@
-import heapq
+import heapq as hp
 
 def find_top_k(arr, k):
-    # TODO
-
-    return arr
+    arr2=[]
+    for elemento in range(k):
+        hp.heappush(arr2, elemento)
+        if elemento > arr2[0]:
+            
+    return arr2
 
 # TESTS
 def run_tests():
