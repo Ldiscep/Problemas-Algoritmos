@@ -1,0 +1,1 @@
+def subsetsumeasy(vector, target):
