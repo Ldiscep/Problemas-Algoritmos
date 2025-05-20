@@ -13,7 +13,7 @@ struct dictionary {
   hash_entry_t *tabla;
   size_t capacidad;
   size_t cantidad;
-  destroy_f destroy;
+  destroy_f destroyer;
 };
 unsigned long funcion_hash(const char *clave, int table_size) {
   unsigned long hash = 5381;
@@ -28,14 +28,12 @@ unsigned long funcion_hash(const char *clave, int table_size) {
 
 
 
-dictionary_t *dictionary_create(destroy_f destroy) { return NULL; };
-
-bool dictionary_put(dictionary_t *dictionary, const char *key, void *value) {
+dictionary_t *dictionary_create(destroy_f destroy) {
   dictionary_t *dic = malloc(sizeof(dictionary_t));
   if (!dic) return NULL;
   dic->capacidad=C_I;
   dic->cantidad=0;
-  dic->destroy=NULL;
+  dic->destroyer=destroy;
   dic->tabla = calloc(dic->capacidad, sizeof(hash_entry_t));
   if (!dic->tabla) {
       free(dic);
@@ -43,6 +41,10 @@ bool dictionary_put(dictionary_t *dictionary, const char *key, void *value) {
   }
 
   return dic;
+};
+
+bool dictionary_put(dictionary_t *dictionary, const char *key, void *value) {
+return false;
 };
 
 void *dictionary_get(dictionary_t *dictionary, const char *key, bool *err) {
