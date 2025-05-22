@@ -127,7 +127,7 @@ bool dictionary_contains(dictionary_t *dictionary, const char *key) {
   }
   return true;
 };
-
+//ayuda
 size_t dictionary_size(dictionary_t *dictionary) {  
   return dictionary->cantidad;
 };
