@@ -1,6 +1,7 @@
 #include "tp3.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define C_I 170// capacidad inicial sugerida por el copilot 😶‍🌫️
 
 typedef struct {
@@ -47,15 +48,20 @@ bool dictionary_put(dictionary_t *dictionary, const char *key, void *value) {
    unsigned long hashed_key = funcion_hash(key, dictionary->capacidad);
    int indice = (int)hashed_key;
   while (true){
-    if (indice > dictionary->capacidad) return false;
+    if (indice > dictionary->capacidad) return false; // Ensure indice does not exceed capacity
     if (dictionary->tabla[indice].ocupado == true) {
-      indice ++;
+      indice++;
       continue;
     }
-    dictionary->tabla[indice].key = (char *)hashed_key;
-    dictionary->tabla[indice].value= value;
+    // aca guardás una copia de key strcpy
+    char *key2 = malloc(strlen(key) + 1);
+    if (!key2) return false; 
+    strcpy(key2, key);
+    dictionary->tabla[indice].key = key2;
+    dictionary->tabla[indice].value = value;
     dictionary->tabla[indice].ocupado = true;
-    dictionary->cantidad ++ ;
+    dictionary->tabla[indice].borrado = false;
+    dictionary->cantidad++;
     return true;
   }
 }
@@ -65,17 +71,16 @@ void *dictionary_get(dictionary_t *dictionary, const char *key, bool *err) {
   int indice = (int)hashed_key;
   while (dictionary->tabla[indice].ocupado == true || dictionary->tabla[indice].borrado==true ){ 
 
-    if (hashed_key == (unsigned long)dictionary->tabla[indice].key) {
-      err = false;
+    if (key == dictionary->tabla[indice].key) {
+      *err = false;
       return dictionary->tabla[indice].value;}
     else indice++;
 
-    if (indice ==dictionary->capacidad) return false;
+    if (indice ==dictionary->capacidad) return NULL;
   }
   *err= true;
   return NULL;
 }
-
 
 bool dictionary_delete(dictionary_t *dictionary, const char *key) {
   
@@ -104,7 +109,7 @@ void *dictionary_pop(dictionary_t *dictionary, const char *key, bool *err) {
       dictionary->tabla[indice].ocupado = false;
       dictionary->tabla[indice].borrado= true;
       dictionary->cantidad --;
-      * err= false;
+      *err = false; // Correctly dereference the pointer
       return dictionary->tabla[indice].value;
     }
     indice++;
@@ -133,4 +138,13 @@ size_t dictionary_size(dictionary_t *dictionary) {
 };
 
 
-void dictionary_destroy(dictionary_t *dictionary){};
+void dictionary_destroy(dictionary_t *dictionary){
+  for (int idx=0; idx< dictionary->capacidad; idx++){
+    free(dictionary->tabla[idx].key);
+    free(dictionary->tabla[idx].value);
+
+  }
+  free(dictionary->tabla);
+  free(dictionary);
+
+};
