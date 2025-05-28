@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define C_I 170// capacidad inicial sugerida por el copilot 😶‍🌫️
+#define C_I 17000// capacidad inicial sugerida por el copilot 😶‍🌫️
 
 typedef struct {
   char *key;
@@ -67,26 +67,28 @@ bool dictionary_put(dictionary_t *dictionary, const char *key, void *value) {
 }
 
 void *dictionary_get(dictionary_t *dictionary, const char *key, bool *err) {
-  unsigned long hashed_key =funcion_hash(key,dictionary->capacidad);
-  int indice = (int)hashed_key;
-  while (dictionary->tabla[indice].ocupado == true || dictionary->tabla[indice].borrado==true ){ 
+    unsigned long hashed_key = funcion_hash(key, dictionary->capacidad);
+    int indice = (int)hashed_key;
 
-    if (key == dictionary->tabla[indice].key) {
-      *err = false;
-      return dictionary->tabla[indice].value;}
-    else indice++;
+    while (indice < dictionary->capacidad) {
+        if (dictionary->tabla[indice].ocupado && !dictionary->tabla[indice].borrado) {
+            if (strcmp(dictionary->tabla[indice].key, key) == 0) {
+                *err = false;
+                return dictionary->tabla[indice].value;
+            }
+        }
+        indice++;
+    }
 
-    if (indice ==dictionary->capacidad) return NULL;
-  }
-  *err= true;
-  return NULL;
+    *err = true;
+    return NULL;
 }
 
 bool dictionary_delete(dictionary_t *dictionary, const char *key) {
   
   unsigned long hashed_key =funcion_hash(key,dictionary->capacidad);
   int indice = (int)hashed_key;
-  while (dictionary->tabla[indice].ocupado == true || dictionary->tabla[indice].borrado==true ){ 
+  while (dictionary->tabla[indice].ocupado == true){ 
 
     if (hashed_key == (unsigned long)dictionary->tabla[indice].key) {
       dictionary->tabla[indice].ocupado = false;
@@ -101,28 +103,31 @@ bool dictionary_delete(dictionary_t *dictionary, const char *key) {
 };
 
 void *dictionary_pop(dictionary_t *dictionary, const char *key, bool *err) {
-  unsigned long hashed_key =funcion_hash(key,dictionary->capacidad);
-  int indice = (int)hashed_key;
-  while (dictionary->tabla[indice].ocupado == true || dictionary->tabla[indice].borrado==true ){ 
+    unsigned long hashed_key = funcion_hash(key, dictionary->capacidad);
+    int indice = (int)hashed_key;
 
-    if (hashed_key == (unsigned long)dictionary->tabla[indice].key) {
-      dictionary->tabla[indice].ocupado = false;
-      dictionary->tabla[indice].borrado= true;
-      dictionary->cantidad --;
-      *err = false; // Correctly dereference the pointer
-      return dictionary->tabla[indice].value;
+    while (indice < dictionary->capacidad) {
+        if (dictionary->tabla[indice].ocupado && !dictionary->tabla[indice].borrado) {
+            if (strcmp(dictionary->tabla[indice].key, key) == 0) {
+                void *value = dictionary->tabla[indice].value;
+                dictionary->tabla[indice].ocupado = false;
+                dictionary->tabla[indice].borrado = true;
+                dictionary->cantidad--;
+                *err = false;
+                return value;
+            }
+        }
+        indice++;
     }
-    indice++;
-    if (indice ==dictionary->capacidad) {*err=true ;return NULL;}
-  }
-  *err = true;
-  return NULL;
-};
+
+    *err = true;
+    return NULL;
+}
 
 bool dictionary_contains(dictionary_t *dictionary, const char *key) {
   unsigned long hashed_key =funcion_hash(key,dictionary->capacidad);
   int indice = (int)hashed_key;
-  while (dictionary->tabla[indice].ocupado == true || dictionary->tabla[indice].borrado==true ){ 
+  while (dictionary->tabla[indice].ocupado == true){ 
 
     if (hashed_key == (unsigned long)dictionary->tabla[indice].key) {
       return true;}
@@ -141,7 +146,7 @@ size_t dictionary_size(dictionary_t *dictionary) {
 void dictionary_destroy(dictionary_t *dictionary){
   for (int idx=0; idx< dictionary->capacidad; idx++){
     free(dictionary->tabla[idx].key);
-    free(dictionary->tabla[idx].value);
+    //free(dictionary->tabla[idx].value);
 
   }
   free(dictionary->tabla);
