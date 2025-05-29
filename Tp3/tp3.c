@@ -127,15 +127,15 @@ void *dictionary_pop(dictionary_t *dictionary, const char *key, bool *err) {
 bool dictionary_contains(dictionary_t *dictionary, const char *key) {
   unsigned long hashed_key =funcion_hash(key,dictionary->capacidad);
   int indice = (int)hashed_key;
-  while (dictionary->tabla[indice].ocupado == true){ 
+  while (dictionary->tabla[indice].ocupado == true||dictionary->tabla[indice].borrado==true){ 
 
     if (hashed_key == (unsigned long)dictionary->tabla[indice].key) {
       return true;}
     else indice++;
 
-    if (indice ==dictionary->capacidad) return false;
+    if (indice >=dictionary->capacidad) return false;
   }
-  return true;
+  return false;
 };
 //ayuda
 size_t dictionary_size(dictionary_t *dictionary) {  
