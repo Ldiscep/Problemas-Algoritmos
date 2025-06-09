@@ -53,3 +53,6 @@ def count_connected_components(graph: Graph) -> int:
             count += 1
 
     return count
+
+def largest_connected(graph):
+    print("saa")
